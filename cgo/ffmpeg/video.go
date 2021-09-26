@@ -1,6 +1,8 @@
 package ffmpeg
 
 /*
+#cgo CFLAGS:  -I /usr/local/include
+#cgo pkg-config:libavcode
 #include "ffmpeg.h"
 int wrap_avcodec_decode_video2(AVCodecContext *ctx, AVFrame *frame, void *data, int size, int *got) {
 	struct AVPacket pkt = {.data = data, .size = size};
@@ -9,17 +11,18 @@ int wrap_avcodec_decode_video2(AVCodecContext *ctx, AVFrame *frame, void *data, 
 */
 import "C"
 import (
-	"unsafe"
-	"runtime"
 	"fmt"
 	"image"
 	"reflect"
+	"runtime"
+	"unsafe"
+
 	"github.com/nareix/joy4/av"
 	"github.com/nareix/joy4/codec/h264parser"
 )
 
 type VideoDecoder struct {
-	ff *ffctx
+	ff        *ffctx
 	Extradata []byte
 }
 
@@ -76,13 +79,13 @@ func (self *VideoDecoder) Decode(pkt []byte) (img *VideoFrame, err error) {
 		cs := int(frame.linesize[1])
 
 		img = &VideoFrame{Image: image.YCbCr{
-			Y: fromCPtr(unsafe.Pointer(frame.data[0]), ys*h),
-			Cb: fromCPtr(unsafe.Pointer(frame.data[1]), cs*h/2),
-			Cr: fromCPtr(unsafe.Pointer(frame.data[2]), cs*h/2),
-			YStride: ys,
-			CStride: cs,
+			Y:              fromCPtr(unsafe.Pointer(frame.data[0]), ys*h),
+			Cb:             fromCPtr(unsafe.Pointer(frame.data[1]), cs*h/2),
+			Cr:             fromCPtr(unsafe.Pointer(frame.data[2]), cs*h/2),
+			YStride:        ys,
+			CStride:        cs,
 			SubsampleRatio: image.YCbCrSubsampleRatio420,
-			Rect: image.Rect(0, 0, w, h),
+			Rect:           image.Rect(0, 0, w, h),
 		}, frame: frame}
 		runtime.SetFinalizer(img, freeVideoFrame)
 	}
@@ -114,11 +117,10 @@ func NewVideoDecoder(stream av.CodecData) (dec *VideoDecoder, err error) {
 	if _dec.ff, err = newFFCtxByCodec(c); err != nil {
 		return
 	}
-	if err =  _dec.Setup(); err != nil {
+	if err = _dec.Setup(); err != nil {
 		return
 	}
 
 	dec = _dec
 	return
 }
-
