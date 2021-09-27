@@ -1,7 +1,6 @@
 package ffmpeg
 
 /*
-#cgo CFLAGS:  -I /usr/local/include
 #cgo pkg-config:libavcode
 #include "ffmpeg.h"
 int wrap_avcodec_decode_video2(AVCodecContext *ctx, AVFrame *frame, void *data, int size, int *got) {

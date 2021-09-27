@@ -1,8 +1,6 @@
 package ffmpeg
 
 /*
-#cgo CFLAGS:  -I /usr/local/include
-#cgo LDFLAGS: -L /usr/local/lib
 #include "ffmpeg.h"
 int wrap_avcodec_decode_audio4(AVCodecContext *ctx, AVFrame *frame, void *data, int size, int *got) {
 	struct AVPacket pkt = {.data = data, .size = size};
