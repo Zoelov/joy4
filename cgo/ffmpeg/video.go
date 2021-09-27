@@ -1,7 +1,7 @@
 package ffmpeg
 
 /*
-#cgo pkg-config:libavcode
+#cgo pkg-config:libavcodec
 #include "ffmpeg.h"
 int wrap_avcodec_decode_video2(AVCodecContext *ctx, AVFrame *frame, void *data, int size, int *got) {
 	struct AVPacket pkt = {.data = data, .size = size};
